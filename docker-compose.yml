@@ -1,0 +1,23 @@
+version: "3.1"
+services:
+  fluentai:
+    image: goalchum
+    container_name: goalchum
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.goalchum-domain.rule=Host(`goalchum.theronburger.com`)"
+      - "traefik.http.routers.lcb-cms.entrypoints=websecure"
+      - "traefik.http.routers.lcb-cms.tls.certResolver=lets-encrypt"
+      - "traefik.http.services.lcb-cms.loadbalancer.server.port=3500"
+      - "traefik.http.middlewares.lcb-cms-cors.headers.accessControlAllowOrigin=*"
+      - "traefik.http.middlewares.lcb-cms-cors.headers.accessControlAllowMethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.lcb-cms-cors.headers.accessControlAllowHeaders=Content-Type"
+      - "traefik.http.middlewares.lcb-cms-cors.headers.accessControlAllowCredentials=true"
+      - "traefik.http.routers.lcb-cms.middlewares=lcb-cms-cors"
+    networks:
+      - externalNet
+
+networks:
+  externalNet:
+    external: true
